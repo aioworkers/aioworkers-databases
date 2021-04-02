@@ -49,7 +49,4 @@ addopts = "--flake8 --doctest-modules --black --mypy --mypy-ignore-missing-impor
 testpaths = ["aioworkers_databases", "tests"]
 flake8-max-complexity = 10
 flake8-max-line-length = 99
-markers = [
-    "sqlite",
-]
 

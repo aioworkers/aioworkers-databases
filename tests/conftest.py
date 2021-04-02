@@ -42,6 +42,6 @@ def sqlite_setup(context, db_url, db_name):
 def config_yaml(db_url):
     return f"""
     db:
-      cls: aioworkers_databases.connector.Database
+      cls: aioworkers_databases.database.Database
       url: {db_url}
     """
