@@ -127,3 +127,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# poetry
+poetry.lock
+poetry.toml
+
+# Idea
+.idea
+
+# Macos
+.DS_Store
+
+# Testing
+test.db.sqlite
