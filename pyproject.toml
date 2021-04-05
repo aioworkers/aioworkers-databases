@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "aioworkers-databases"
 version = "0.0.0"
-description = ""
+description = "Databases plugin for aioworkers"
 authors = ["Alexander Bogushov <abogushov@gmail.com>"]
 license = "Apache Software License 2.0"
 readme = "README.md"
@@ -24,7 +24,7 @@ aioworkers = "^0.18"
 databases = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.2"
 pytest-aioworkers = "^0.3.0"
 PyYAML = "^5.4.1"
 pytest-black = "^0.3.12"
@@ -49,4 +49,4 @@ addopts = "--flake8 --doctest-modules --black --mypy --mypy-ignore-missing-impor
 testpaths = ["aioworkers_databases", "tests"]
 flake8-max-complexity = 10
 flake8-max-line-length = 99
-
+markers = ["sqlite"]

@@ -2,6 +2,7 @@ import typing
 
 import databases
 from aioworkers.core.base import AbstractConnector
+from aioworkers.core.config import Config
 from databases.core import Connection, Transaction
 from sqlalchemy.sql import ClauseElement
 
@@ -13,56 +14,60 @@ class Database(AbstractConnector):
 
     def __init__(self, config=None, *, context=None, loop=None):
         super().__init__(config, context=context, loop=loop)
-        self._db: typing.Union[databases.Database, None] = None
+        self._db: databases.Database = None
+        self._dsn: str = None
 
     async def init(self):
         await super().init()
-        self.logger.info(f"Use database: {self.config.url}")
-        self._db = databases.Database(self.config.url)
+        self._db = databases.Database(self._dsn)
+
+    def set_config(self, config: Config) -> None:
+        cfg = config.new_parent(logger="aioworkers_databases")
+        self._dsn = cfg.get("dsn")
+        super().set_config(cfg)
 
     async def connect(self):
-        self.logger.debug(f"Connect to: {self.config.url}")
         await self._db.connect()
 
     async def disconnect(self):
-        self.logger.debug(f"Disconnect: {self.config.url}")
         await self._db.disconnect()
 
     async def execute(
-            self, query: typing.Union[ClauseElement, str], values: dict = None
+        self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.Any:
-        return await self._db.execute(query, values)
+        if self._db is not None:
+            return await self._db.execute(query, values)
 
     async def execute_many(
-            self, query: typing.Union[ClauseElement, str], values: list
+        self, query: typing.Union[ClauseElement, str], values: list
     ) -> None:
         return await self._db.execute_many(query, values)
 
     async def fetch_all(
-            self, query: typing.Union[ClauseElement, str], values: dict = None
+        self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.List[typing.Mapping]:
         return await self._db.fetch_all(query, values)
 
     async def fetch_one(
-            self, query: typing.Union[ClauseElement, str], values: dict = None
+        self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.Optional[typing.Mapping]:
         return await self._db.fetch_one(query, values)
 
     async def fetch_val(
-            self,
-            query: typing.Union[ClauseElement, str],
-            values: dict = None,
-            column: typing.Any = 0,
+        self,
+        query: typing.Union[ClauseElement, str],
+        values: dict = None,
+        column: typing.Any = 0,
     ) -> typing.Any:
         return await self._db.fetch_val(query, values, column)
 
     def transaction(
-            self, *, force_rollback: bool = False, **kwargs: typing.Any
+        self, *, force_rollback: bool = False, **kwargs: typing.Any
     ) -> "Transaction":
         return self._db.transaction(force_rollback=force_rollback, **kwargs)
 
     async def iterate(
-            self, query: typing.Union[ClauseElement, str], values: dict = None
+        self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.AsyncGenerator[typing.Mapping, None]:
         async for record in self._db.iterate(query, values):
             yield record

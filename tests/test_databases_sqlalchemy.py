@@ -16,10 +16,12 @@ notes = sqlalchemy.Table(
 
 @pytest.mark.sqlite
 async def test_database_sqlalchemy(context):
-    await context.db.execute('CREATE TABLE notes (id int, text TEXT, completed boolean)')
+    await context.db.execute(
+        "CREATE TABLE notes (id int, text TEXT, completed boolean)"
+    )
 
     query = notes.insert()
     values = {"text": "example1", "completed": True}
     await context.db.execute(query=query, values=values)
 
-    await context.db.execute('DROP TABLE notes;')
+    await context.db.execute("DROP TABLE notes;")

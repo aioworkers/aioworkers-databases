@@ -3,20 +3,13 @@ import pathlib
 import pytest
 
 
-def pytest_configure(config):
-    # FIXME: Pass custom markers here instead of pyproject.toml because pytest ignore it there.
-    config.addinivalue_line(
-        "markers", "sqlite"
-    )
-
-
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def db_name():
-    return 'test.db.sqlite'
+    return "test.db.sqlite"
 
 
-@pytest.fixture(scope='session')
-def db_url(db_name):
+@pytest.fixture(scope="session")
+def db_dsn(db_name):
     return f"sqlite:///{db_name}"
 
 
@@ -25,13 +18,13 @@ def _sqlite_marker(request):
     """
     Implement the sqlite marker.
     """
-    marker = request.node.get_closest_marker('sqlite')
+    marker = request.node.get_closest_marker("sqlite")
     if marker:
-        request.getfixturevalue('sqlite_setup')
+        request.getfixturevalue("sqlite_setup")
 
 
 @pytest.fixture
-def sqlite_setup(context, db_url, db_name):
+def sqlite_setup(context, db_dsn, db_name):
     # Delete sqlite db file from previous run if something goes wrong
     p = pathlib.Path(__file__).parent.with_name(db_name)
     if p.exists():
@@ -39,12 +32,12 @@ def sqlite_setup(context, db_url, db_name):
 
 
 @pytest.fixture
-def config_yaml(db_url):
+def config_yaml(db_dsn):
     return f"""
     db:
       cls: aioworkers_databases.database.Database
-      url: {db_url}
-    # Configure logging for debug purposes
+      dsn: {db_dsn}
+    # Configure logger for debug
     logging:
       version: 1
       disable_existing_loggers: false
@@ -56,7 +49,7 @@ def config_yaml(db_url):
           level: DEBUG
           class: logging.StreamHandler
       loggers:
-        aioworkers:
+        aioworkers_databases:
           level: DEBUG
           handlers: [console]
           propagate: true
