@@ -19,7 +19,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = ">=3.6.1,<4.0"
 aioworkers = "^0.18"
 databases = "^0.4.0"
 
@@ -31,6 +31,7 @@ pytest-black = "^0.3.12"
 pytest-flake8 = "^1.0.7"
 pytest-mypy = "^0.8.0"
 aiosqlite = "^0.17.0"
+ipython = "^7.11"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]

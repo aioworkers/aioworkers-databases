@@ -35,8 +35,7 @@ class Database(AbstractConnector):
     async def execute(
         self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.Any:
-        if self._db is not None:
-            return await self._db.execute(query, values)
+        return await self._db.execute(query, values)
 
     async def execute_many(
         self, query: typing.Union[ClauseElement, str], values: list
@@ -66,11 +65,10 @@ class Database(AbstractConnector):
     ) -> "Transaction":
         return self._db.transaction(force_rollback=force_rollback, **kwargs)
 
-    async def iterate(
+    def iterate(
         self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.AsyncGenerator[typing.Mapping, None]:
-        async for record in self._db.iterate(query, values):
-            yield record
+        return self._db.iterate(query, values)
 
     def connection(self) -> "Connection":
         return self._db.connection()

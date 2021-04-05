@@ -8,12 +8,33 @@ aioworkers plugin for [databases](https://github.com/encode/databases).
 
 ## Usage
 
-Add your database config to aioworkers config:
+Add your database config to aioworkers `config.yaml`:
 
 ```yaml
 db:
   cls: aioworkers_databases.database.Database
   dsn: sqlite:///db.sqlite
+logging:
+  version: 1
+  disable_existing_loggers: false
+  root:
+    level: ERROR
+    handlers: [console]
+  handlers:
+    console:
+      level: DEBUG
+      class: logging.StreamHandler
+  loggers:
+    aioworkers_databases:
+      level: ERROR
+      handlers: [console]
+      propagate: true
+```
+
+Run `aioworkers`:
+
+```shell
+aioworkers -c config.yaml -i        
 ```
 
 Create `Context` for this config and use your db via context:
