@@ -44,4 +44,20 @@ def config_yaml(db_url):
     db:
       cls: aioworkers_databases.database.Database
       url: {db_url}
+    # Configure logging for debug purposes
+    logging:
+      version: 1
+      disable_existing_loggers: false
+      root:
+        level: ERROR
+        handlers: [console]
+      handlers:
+        console:
+          level: DEBUG
+          class: logging.StreamHandler
+      loggers:
+        aioworkers:
+          level: DEBUG
+          handlers: [console]
+          propagate: true
     """

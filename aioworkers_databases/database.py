@@ -17,16 +17,19 @@ class Database(AbstractConnector):
 
     async def init(self):
         await super().init()
+        self.logger.info(f"Use database: {self.config.url}")
         self._db = databases.Database(self.config.url)
 
     async def connect(self):
+        self.logger.debug(f"Connect to: {self.config.url}")
         await self._db.connect()
 
     async def disconnect(self):
+        self.logger.debug(f"Disconnect: {self.config.url}")
         await self._db.disconnect()
 
     async def execute(
-        self, query: typing.Union[ClauseElement, str], values: dict = None
+            self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.Any:
         return await self._db.execute(query, values)
 
@@ -36,20 +39,20 @@ class Database(AbstractConnector):
         return await self._db.execute_many(query, values)
 
     async def fetch_all(
-        self, query: typing.Union[ClauseElement, str], values: dict = None
+            self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.List[typing.Mapping]:
         return await self._db.fetch_all(query, values)
 
     async def fetch_one(
-        self, query: typing.Union[ClauseElement, str], values: dict = None
+            self, query: typing.Union[ClauseElement, str], values: dict = None
     ) -> typing.Optional[typing.Mapping]:
         return await self._db.fetch_one(query, values)
 
     async def fetch_val(
-        self,
-        query: typing.Union[ClauseElement, str],
-        values: dict = None,
-        column: typing.Any = 0,
+            self,
+            query: typing.Union[ClauseElement, str],
+            values: dict = None,
+            column: typing.Any = 0,
     ) -> typing.Any:
         return await self._db.fetch_val(query, values, column)
 
